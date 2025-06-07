@@ -114,18 +114,17 @@ if args.usedns:
 
 @func_set_timeout(60)
 def get_current_ip(typ: str):
-    for source in ip_sources[typ]:
-        try:
-            current_ip = source(10)
+    try:
+        with open('ip.txt', 'r', encoding='utf-8') as f:
+            current_ip = f.read().strip()
             if typ == 'A':
                 logger.info(f'Current ipv4 address is {current_ip}.')
             elif typ == 'AAAA':
                 logger.info(f'Current ipv6 address is {current_ip}.')
             return current_ip
-        except Exception as err:
-            logger.warning(f'Failed to get ip by using {source}, err: "{err}"')
-    logger.error('Failed to get ip after using all sources.')
-    return False
+    except Exception as err:
+        logger.error(f'Failed to read ip from file, err: "{err}"')
+        return False
 
 
 @func_set_timeout(30)
